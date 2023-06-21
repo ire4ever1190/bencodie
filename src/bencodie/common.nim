@@ -18,10 +18,10 @@ func highlightSection*(buf: openArray[char], highlight: int, show: int = highlig
     import std/strutils
 
     let highlighted = "hello world".highlightSection("hello".len, "hello world".len)
-    assert highlighted = """
+    assert highlighted == """
       hello world
       ^^^^^
-    """.unindent()
+    """.unindent().strip()
   #==#
   assert show >= highlight + start, "You must be showing atleast as much as you're highlighting"
   # Allocate for

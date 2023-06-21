@@ -39,5 +39,5 @@ proc writeBencode*(data: JsonNode, result: var string) =
 proc writeBencode*(data: JsonNode): string =
   ## Converts JSON into a Bencoded string.
   ##
-  ## - See [writeBencode(json, result)] for inplace version
+  ## - See [writeBencode(data, result)] for inplace version
   data.writeBencode(result)

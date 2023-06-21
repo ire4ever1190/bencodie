@@ -35,6 +35,13 @@ suite "Decoders":
   test "List":
     check readBencode("li42e5:stuffi666ee") == %*[42, "stuff", 666]
 
+  test "List in list":
+    # This was causing an infinite loop
+    check readBencode("li14e4:spamli42eee") == %*[14, "spam", [42]]
+
+  test "Dict in dict":
+    check readBencode("d3:food3:fooi2eee") == %*{"foo": {"foo": 2}}
+
 suite "Encoders":
   test "Integer":
     check writeBencode(%14) == "i14e"

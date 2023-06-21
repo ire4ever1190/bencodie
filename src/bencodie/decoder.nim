@@ -77,11 +77,12 @@ proc readDict(buf: openArray[char], items: var JsonNode): int =
   while i < buf.len and buf[i] != 'e': # Lists end with 'e'
     # First parse the key
     var key: string
-    let strLength = buf.toOpenArray(i).readString(key)
+    i += buf.toOpenArray(i).readString(key)
     # Now we can parse the value
     var val: JsonNode
     i += buf.toOpenArray(i).readValue(val)
     items[key] = val
+  return i
 
 
 proc readList(buf: openArray[char], items: var JsonNode): int =
@@ -93,11 +94,13 @@ proc readList(buf: openArray[char], items: var JsonNode): int =
     var newItem: JsonNode
     i += buf.toOpenArray(i).readValue(newItem)
     items &= newItem
+  return i
 
 proc readBencode*(buf: openArray[char]): JsonNode =
   ## Parses a bencode string and returns it as `JsonNode`
   runnableExamples:
-    assert parseBencode("li42e5:stuffi666ee") == %*[42, "stuff", 666]
+    import std/json
+    assert readBencode("li42e5:stuffi666ee") == %*[42, "stuff", 666]
   #==#
   discard buf.readValue(result)
 
