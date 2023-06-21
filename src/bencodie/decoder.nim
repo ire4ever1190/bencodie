@@ -7,7 +7,7 @@ import std/[
 ]
 
 
-proc readInt(buf: openArray[char], item: var JsonNode): int =
+func readInt(buf: openArray[char], item: var JsonNode): int =
   if buf[0] != 'i':
     raise (ref DecodeError)(msg: "Integer doesn't start with i\n" & buf.highlightSection(1, 5))
 
@@ -23,7 +23,7 @@ proc readInt(buf: openArray[char], item: var JsonNode): int =
   return 2 + len # Length + i at start + e at end
 
 
-proc readString(buf: openArray[char], item: var string): int =
+func readString(buf: openArray[char], item: var string): int =
   ## Parses a string from the buffer. This operates directly on string for performance reasons
   # Get the length of the string
   var strLength: int
@@ -41,7 +41,7 @@ proc readString(buf: openArray[char], item: var string): int =
     item[i] = buf[lenLen + 1 + i] # Length of string length + colon, then we can get the index
   return lenLen + 1 + strLength # Length of string length + colon + how long the string was
 
-proc readString(buf: openArray[char], item: var JsonNode): int {.inline.} =
+func readString(buf: openArray[char], item: var JsonNode): int {.inline.} =
   ## Reads a string from the buffer. This operates on JsonNode like everything else
   var str: string
   result = buf.readString(str)
