@@ -17,7 +17,7 @@ import std/json
 
   `bool` and `float` are not supported since they were not in the standard.
 
-  Reading is done with [readBencode()]
+  Reading is done with [readBencode]
 ]##
 
 runnableExamples:
@@ -28,7 +28,7 @@ runnableExamples:
   # Lists
   assert readBencode("li14e4:spamli42eee") == %*[14, "spam", [42]]
   # Dicts
-  assert readBencode("d3:foo3:bar3") == %*{"foo": "bar"}
+  assert readBencode("d3:foo3:bare") == %*{"foo": "bar"}
 
 ## Writing can be done via [writeBencode(data, result)] (in-place) or [writeBencode(data)] (returns a string)
 
