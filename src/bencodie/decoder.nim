@@ -2,8 +2,7 @@ import common
 import std/[
   parseutils,
   json,
-  strutils,
-  tables
+  strutils
 ]
 
 
@@ -82,7 +81,7 @@ proc readDict(buf: openArray[char], items: var JsonNode): int =
     var val: JsonNode
     i += buf.toOpenArray(i).readValue(val)
     items[key] = val
-  return i
+  return i + 1 # Skip the 'e'
 
 
 proc readList(buf: openArray[char], items: var JsonNode): int =
@@ -94,7 +93,7 @@ proc readList(buf: openArray[char], items: var JsonNode): int =
     var newItem: JsonNode
     i += buf.toOpenArray(i).readValue(newItem)
     items &= newItem
-  return i
+  return i + 1 # Skip the 'e'
 
 proc readBencode*(buf: openArray[char]): JsonNode =
   ## Parses a bencode string and returns it as `JsonNode`

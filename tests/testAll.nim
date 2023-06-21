@@ -42,6 +42,12 @@ suite "Decoders":
   test "Dict in dict":
     check readBencode("d3:food3:fooi2eee") == %*{"foo": {"foo": 2}}
 
+  test "List with two lists":
+    check readBencode("llelee") == %*[[], []]
+
+  test "List with two dicts":
+    check readBencode("ld3:fooleed3:barleee") == %*[{"foo": []}, {"bar": []}]
+
 suite "Encoders":
   test "Integer":
     check writeBencode(%14) == "i14e"
