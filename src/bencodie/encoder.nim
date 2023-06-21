@@ -1,6 +1,6 @@
 import std/[
   json,
-  sugar,
+  sequtils,
   algorithm
 ]
 import common
@@ -10,30 +10,34 @@ template write(str: string, buf: var string) =
   buf.addInt(str.len)
   buf &= ":" & str
 
-proc writeBencode*(x: JsonNode): string =
-  ## Writes JSON into a bencode encoded string
-  case x.kind
+proc writeBencode*(data: JsonNode, result: var string) =
+  ## Writes JSON into a bencode encoded string. This performs it inplace
+  case data.kind
   of JInt:
-    result = "i"
-    result.addInt(x.num)
+    result &= "i"
+    result.addInt(data.num)
     result &= 'e'
   of JString:
-    x.str.write(result)
+    data.str.write(result)
   of JArray:
     result &= 'l'
-    for item in x:
-      result &= item.writeBencode()
+    for item in data:
+      item.writeBencode(result)
     result &= 'e'
   of JObject:
     # We first need to sort the keys, and then write them out
-    var keys: seq[string]
-    for key in x.keys:
-      keys &= key
+    var keys = toSeq(data.keys)
     keys.sort()
     result &= 'd'
     for key in keys:
       key.write(result)
-      result &= x[key].writeBencode()
+      data[key].writeBencode(result)
     result &= 'e'
   else:
-    raise (ref EncodeError)(msg: $x.kind & " cannot be converted into Bencode")
+    raise (ref EncodeError)(msg: $data.kind & " cannot be converted into Bencode")
+
+proc writeBencode*(data: JsonNode): string =
+  ## Converts JSON into a Bencoded string.
+  ##
+  ## - See [writeBencode(json, result)] for inplace version
+  data.writeBencode(result)

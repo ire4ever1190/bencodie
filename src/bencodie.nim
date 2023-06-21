@@ -1,4 +1,4 @@
 import bencodie/[decoder, encoder]
 
 
-export decoders, encoder
+export decoder, encoder
