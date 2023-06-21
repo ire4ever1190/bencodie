@@ -46,8 +46,8 @@ func readString(buf: openArray[char], item: var JsonNode): int {.inline.} =
   result = buf.readString(str)
   item = %str
 
-proc readDict(buf: openArray[char], items: var JsonNode): int
-proc readList(buf: openArray[char], items: var JsonNode): int
+proc readDict(buf: openArray[char], items: var JsonNode): int {.gcsafe.}
+proc readList(buf: openArray[char], items: var JsonNode): int {.gcsafe.}
 
 proc readValue(buf: openArray[char], item: var JsonNode): int =
   ## Parses any value depending on what the first character is
