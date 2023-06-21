@@ -2,7 +2,7 @@
 
 version       = "0.1.0"
 author        = "Jake Leahy"
-description   = "Bencode decoder/encoder that uses jsony style hooks"
+description   = "Simple bencode decoder/encoder that maps to/from JsonNode"
 license       = "MIT"
 srcDir        = "src"
 
