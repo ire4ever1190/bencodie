@@ -1,9 +1,12 @@
 import std/[
   json,
   sequtils,
-  algorithm
+  algorithm,
+  tables
 ]
 import common
+
+import pkg/casserole
 
 template write(str: string, buf: var string) =
   ## Writes a string value to the buffer
@@ -12,26 +15,26 @@ template write(str: string, buf: var string) =
 
 proc writeBencode*(data: JsonNode, result: var string) =
   ## Writes JSON into a bencode encoded string. This performs it inplace
-  case data.kind
-  of JInt:
+  case data
+  of JInt(num):
     result &= "i"
-    result.addInt(data.num)
+    result.addInt(num)
     result &= 'e'
-  of JString:
-    data.str.write(result)
-  of JArray:
+  of JString(val):
+    val.write(result)
+  of JArray(items):
     result &= 'l'
-    for item in data:
+    for item in items:
       item.writeBencode(result)
     result &= 'e'
-  of JObject:
+  of JObject(obj):
     # We first need to sort the keys, and then write them out
-    var keys = toSeq(data.keys)
+    var keys = toSeq(obj.keys)
     keys.sort()
     result &= 'd'
     for key in keys:
       key.write(result)
-      data[key].writeBencode(result)
+      obj[key].writeBencode(result)
     result &= 'e'
   else:
     raise (ref EncodeError)(msg: $data.kind & " cannot be converted into Bencode")
