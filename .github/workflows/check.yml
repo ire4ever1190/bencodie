@@ -12,36 +12,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        nim: ['devel', 'stable']
+        nim: ["devel", "stable"]
 
     name: Nim ${{ matrix.nim }}
     steps:
+      - name: Setup Nim Enviroment
+        uses: actions/checkout@v4
 
-    - name: Setup Nim Enviroment
-      uses: actions/checkout@v3
-
-    - uses: jiro4989/setup-nim-action@v1
-      with:
+      - uses: jiro4989/setup-nim-action@v1
+        with:
           nim-version: ${{ matrix.nim }}
 
-    - name: Cache choosenim
-      id: cache-choosenim
-      uses: actions/cache@v1
-      with:
-        path: ~/.nimble
-        key: nimble-${{ hashFiles('*.nimble') }}
+      - name: Run Tests
+        run: nimble test
 
-    - if: ${{ steps.cache-choosenim.outputs.cache-hit != 'true' }}
-      name: Install nim dependencies
-      continue-on-error: true
-      run: nimble update && nimble install
-
-    - name: Run Tests
-      run: nimble test
-
-    - name: Test doc examples
-      run: nimble checkDocs
-
+      - name: Test doc examples
+        run: nimble checkDocs
 
   deploy:
     needs: test
